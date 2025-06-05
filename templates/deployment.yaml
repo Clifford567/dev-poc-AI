@@ -1,22 +1,24 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "myapp.fullname" . }}
-  labels:
-    app: {{ include "myapp.name" . }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ include "myapp.name" . }}
-  template:
-    metadata:
-      labels:
-        app: {{ include "myapp.name" . }}
-    spec:
-      containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: 80
+containers:
+  - name: myapp
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    imagePullPolicy: {{ .Values.image.pullPolicy }}
+    ports:
+      - containerPort: 80
+    env:
+      - name: ENVIRONMENT
+        value: "{{ .Values.env.ENVIRONMENT }}"
+      - name: REGION
+        value: "{{ .Values.env.REGION }}"
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi

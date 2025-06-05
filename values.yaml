@@ -1,8 +1,8 @@
-replicaCount: 1
+replicaCount: 2
 
 image:
-  repository: mcr.microsoft.com/azuredocs/containerapps-helloworld
-  tag: latest
+  repository: myregistry.azurecr.io/myapp
+  tag: "1.0.0"
   pullPolicy: IfNotPresent
 
 service:
@@ -14,13 +14,20 @@ ingress:
   className: "nginx"
   annotations: {}
   hosts:
-    - host: myapp.example.com
+    - host: myapp.local
       paths:
         - path: /
-          pathType: Prefix
+          pathType: ImplementationSpecific
+  tls: []
 
-egress:
-  enabled: true
-  allowCIDRs:
-    - "8.8.8.8/32"
-    - "1.1.1.1/32"
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  ENVIRONMENT: "dev"
+  REGION: "eastus"
