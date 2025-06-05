@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: mcr.microsoft.com/azuredocs/containerapps-helloworld
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+egress:
+  enabled: true
+  allowCIDRs:
+    - "8.8.8.8/32"
+    - "1.1.1.1/32"

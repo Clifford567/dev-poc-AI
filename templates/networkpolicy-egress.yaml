@@ -1,0 +1,23 @@
+{{- if .Values.egress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "myapp.fullname" . }}-egress
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "myapp.name" . }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        {{- range .Values.egress.allowCIDRs }}
+        - ipBlock:
+            cidr: {{ . }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+{{- end }}
